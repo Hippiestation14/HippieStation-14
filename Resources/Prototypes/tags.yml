@@ -287,6 +287,9 @@
   id: Head
 
 - type: Tag
+  id: HfBlade
+
+- type: Tag
   id: HideContextMenu
 
 - type: Tag
