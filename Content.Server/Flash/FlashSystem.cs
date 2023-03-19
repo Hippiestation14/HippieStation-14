@@ -14,7 +14,6 @@ using Content.Shared.Popups;
 using Content.Shared.Tag;
 using Content.Shared.Traits.Assorted;
 using Content.Shared.Weapons.Melee.Events;
-using Content.Server.Popups;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio;
 using Robust.Shared.Player;
@@ -57,9 +56,9 @@ namespace Content.Server.Flash
             }
 
             args.Handled = true;
-            foreach (var entity in args.HitEntities)
+            foreach (var e in args.HitEntities)
             {
-                Flash(entity, args.User, uid, comp.FlashDuration, comp.SlowTo);
+                Flash(e, args.User, uid, comp.FlashDuration, comp.SlowTo);
             }
         }
 
@@ -121,17 +120,12 @@ namespace Content.Server.Flash
             flashable.Duration = flashDuration / 1000f; // TODO: Make this sane...
             Dirty(flashable);
 
-            if (user is not null)
-            {
-                RaiseLocalEvent(target, new FlashEvent(target, user.Value));
-            }
-
             _stunSystem.TrySlowdown(target, TimeSpan.FromSeconds(flashDuration/1000f), true,
                 slowTo, slowTo);
 
             if (displayPopup && user != null && target != user && EntityManager.EntityExists(user.Value))
             {
-                PopupExtensions.PopupMessageOtherClients(user.Value, Loc.GetString("flash-component-user-blinds-you",
+                user.Value.PopupMessage(target, Loc.GetString("flash-component-user-blinds-you",
                     ("user", Identity.Entity(user.Value, EntityManager))));
             }
         }
@@ -168,7 +162,6 @@ namespace Content.Server.Flash
 
         private void OnFlashExamined(EntityUid uid, FlashComponent comp, ExaminedEvent args)
         {
-
             if (!comp.HasUses)
             {
                 args.PushText(Loc.GetString("flash-component-examine-empty"));
@@ -177,7 +170,13 @@ namespace Content.Server.Flash
 
             if (args.IsInDetailsRange)
             {
-                args.PushMarkup(Loc.GetString("flash-component-examine-detail-count",("count", comp.Uses),("markupCountColor", "green")));
+                args.PushMarkup(
+                    Loc.GetString(
+                        "flash-component-examine-detail-count",
+                        ("count", comp.Uses),
+                        ("markupCountColor", "green")
+                    )
+                );
             }
         }
 
@@ -220,20 +219,6 @@ namespace Content.Server.Flash
             Target = target;
             User = user;
             Used = used;
-        }
-    }
-
-    public sealed class FlashEvent : CancellableEntityEventArgs
-    {
-        public readonly EntityUid Target;
-        public readonly EntityUid? User;
-        public readonly float Duration;
-        public readonly float Strength;
-
-        public FlashEvent(EntityUid target, EntityUid user)
-        {
-            Target = target;
-            User = user;
         }
     }
 }
