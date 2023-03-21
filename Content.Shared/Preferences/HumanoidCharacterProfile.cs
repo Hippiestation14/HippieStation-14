@@ -124,8 +124,6 @@ namespace Content.Shared.Preferences
             new List<string>(),
             new List<string>())
         {
-<<<<<<< HEAD
-=======
             return new(
                 "John Doe",
                 "",
@@ -144,7 +142,6 @@ namespace Content.Shared.Preferences
                 PreferenceUnavailableMode.SpawnAsOverflow,
                 new List<string>(),
                 new List<string>());
->>>>>>> fd9c06a... TTS (Text-To-Speech) (#618)
         }
 
         /// <summary>
@@ -538,14 +535,14 @@ namespace Content.Shared.Preferences
 
             _traitPreferences.Clear();
             _traitPreferences.AddRange(traits);
-            
+
             // Corvax-TTS-Start
             prototypeManager.TryIndex<TTSVoicePrototype>(Voice, out var voice);
             if (voice is null || !CanHaveVoice(voice, Sex))
                 Voice = SharedHumanoidSystem.DefaultSexVoice[sex];
             // Corvax-TTS-End
         }
-        
+
         // Corvax-TTS-Start
         // MUST NOT BE PUBLIC, BUT....
         public static bool CanHaveVoice(TTSVoicePrototype voice, Sex sex)
